@@ -1,7 +1,7 @@
 var WebClient = require('@slack/client').WebClient;
 var _ = require('lodash');
 // An access token (from your Slack app or custom integration - usually xoxb)
-const token =   'xoxb-361129974005-HgpQDWOb59tL3Je1K9np7akx'; //process.env.SLACK_TOKEN;
+const token =   'xxx'; //process.env.SLACK_TOKEN;
 
 let web = new WebClient(token);
 
