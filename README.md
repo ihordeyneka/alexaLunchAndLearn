@@ -1,1 +1,5 @@
 # alexaLunchAndLearn
+
+```
+npm install
+```
