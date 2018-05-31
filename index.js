@@ -32,6 +32,7 @@ const StartGameHandler = {
     //store in env variable
     let answer = "broccoli";
     process.env.ANSWER = word;
+    console.log("The guessed word is " + process.env.ANSWER);
 
     let speechResponse = "Okay, the word has " + answer.length + " letters";
     
@@ -54,10 +55,10 @@ const GuessALetterHandler = {
         return response;
       }
 
-      game.setAnswer(process.env.ANSWER);
+      console.log("The guessed word is " + process.env.ANSWER);
 
       let speechResponse = "";
-      let positions = game.tryLetter(letterGuessed);
+      let positions = game.tryLetter(letterGuessed, process.env.ANSWER);
 
       if (positions.length === 0) {
         speechResponse = "Nope";
@@ -84,9 +85,9 @@ const GuessTheWordHandler = {
       return response;
     }
 
-    game.setAnswer(process.env.ANSWER);
+    console.log("The guessed word is " + process.env.ANSWER);
 
-    let guessed = game.tryWord(wordGuessed);
+    let guessed = game.tryWord(wordGuessed, process.env.ANSWER);
 
     if (guessed) {
       speechResponse = "You got it";
