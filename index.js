@@ -24,48 +24,24 @@ function isSlotValid(request, slotName){
 
 // Code for the handlers here
 
-const tellMessageHandler = {
+const GuessALetterHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-            && handlerInput.requestEnvelope.request.intent.name === 'doTellMessage'
+            && handlerInput.requestEnvelope.request.intent.name === 'guessALetter'
     },
     handle(handlerInput) {
-        console.log(handlerInput);
-        console.log(handlerInput.requestEnvelope.request.intent);
-        console.log(handlerInput.requestEnvelope.request.dialogState);
-        console.log("Getting MQ");
-        let messageQuery = isSlotValid(handlerInput.requestEnvelope.request, "messageQuery");
-        if(!messageQuery) {
-            var response = handlerInput.responseBuilder
-                .addDelegateDirective().getResponse();
-            console.log(response);
-            return response;
-        }
-        console.log("Getting Name");
-        let targetName = handlerInput.requestEnvelope.request.intent.slots.targetName.value;
+      console.log("Getting MQ");
+      let letterGuessed = isSlotValid(handlerInput.requestEnvelope.request, "letterGuessed");
+      if (!letterGuessed) {
+        var response = handlerInput.responseBuilder
+            .addDelegateDirective().getResponse();
+        console.log(response);
+        return response;
+      }
 
-        const speechResponse = 'Ok, I\'ll tell '+ targetName + ' ' + messageQuery + '.';
-        console.log('tellMessage Received');
-        sendGenericToAll(messageQuery, targetName);
-        return handlerInput.responseBuilder
-            .speak(speechResponse).getResponse();
-    }
-};
-
-const kickLunchBotHandler = {
-    canHandle(handlerInput) {
-        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-            && handlerInput.requestEnvelope.request.intent.name === 'kickLunchBot';
-    },
-    handle(handlerInput) {
-        const speechText = 'Ok, I\'m kicking the lunch bot now.';
-        console.log('kicked by alexa!!');
-        sendGenericToAll('Ouch, alexa just kicked me!', 'everyone');
-        return handlerInput.responseBuilder
-            .speak(speechText)
-            .reprompt(speechText)
-            .withSimpleCard('Kicked Lunchbot', speechText)
-            .getResponse();
+      const speechResponse = 'You guessed ' + letterGuessed;
+      return handlerInput.responseBuilder
+          .speak(speechResponse).getResponse();
     }
 };
 
@@ -129,8 +105,7 @@ const skillBuilder = Alexa.SkillBuilders.custom();
 
 exports.handler = skillBuilder
     .addRequestHandlers(
-        tellMessageHandler,
-        kickLunchBotHandler,
+        GuessALetterHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
         SessionEndedRequestHandler
