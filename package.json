@@ -5,7 +5,8 @@
   "main": "index.js",
   "dependencies": {
     "@slack/client": "^4.2.0",
-    "ask-sdk": "^2.0.3"
+    "ask-sdk": "^2.0.3",
+    "lodash": "^4.17.10"
   },
   "devDependencies": {},
   "scripts": {

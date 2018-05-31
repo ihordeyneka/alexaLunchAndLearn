@@ -1,7 +1,6 @@
 'use strict';
 
-const sendGenericToAll = require('lunchbot');
-
+const game = require('game');
 
 const Alexa = require('ask-sdk');
 // use 'ask-sdk' if standard SDK module is installed
@@ -24,13 +23,29 @@ function isSlotValid(request, slotName){
 
 // Code for the handlers here
 
+const StartGameHandler = {
+  canHandle(handlerInput) {
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+      && handlerInput.requestEnvelope.request.intent.name === 'startGuessTheWord'
+  },
+  handle(handlerInput) {
+    //store in env variable
+    let answer = "broccoli";
+    process.env.ANSWER = word;
+
+    let speechResponse = "Okay, the word has " + answer.length + " letters";
+    
+    return handlerInput.responseBuilder
+      .speak(speechResponse).getResponse();
+  }
+};
+
 const GuessALetterHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest'
             && handlerInput.requestEnvelope.request.intent.name === 'guessALetter'
     },
     handle(handlerInput) {
-      console.log("Getting MQ");
       let letterGuessed = isSlotValid(handlerInput.requestEnvelope.request, "letterGuessed");
       if (!letterGuessed) {
         var response = handlerInput.responseBuilder
@@ -39,10 +54,49 @@ const GuessALetterHandler = {
         return response;
       }
 
-      const speechResponse = 'You guessed ' + letterGuessed;
+      game.setAnswer(process.env.ANSWER);
+
+      let speechResponse = "";
+      let positions = game.tryLetter(letterGuessed);
+
+      if (positions.length === 0) {
+        speechResponse = "Nope";
+      } else {
+        speechResponse = "You guessed it, the positions are: " + positions.join(",");
+      }
+
       return handlerInput.responseBuilder
           .speak(speechResponse).getResponse();
     }
+};
+
+const GuessTheWordHandler = {
+  canHandle(handlerInput) {
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+      && handlerInput.requestEnvelope.request.intent.name === 'guessTheWord'
+  },
+  handle(handlerInput) {
+    let wordGuessed = isSlotValid(handlerInput.requestEnvelope.request, "wordGuess");
+    if (!wordGuessed) {
+      var response = handlerInput.responseBuilder
+        .addDelegateDirective().getResponse();
+      console.log(response);
+      return response;
+    }
+
+    game.setAnswer(process.env.ANSWER);
+
+    let guessed = game.tryWord(wordGuessed);
+
+    if (guessed) {
+      speechResponse = "You got it";
+    } else {
+      speechResponse = "Nope";
+    }
+
+    return handlerInput.responseBuilder
+      .speak(speechResponse).getResponse();
+  }
 };
 
 const HelpIntentHandler = {
