@@ -4,14 +4,8 @@ let _ = require('lodash');
 
 self.getRandomWord = function () {
   var array = [
-    "algebra",
-    "archaeology",
-    "art",
-    "band",
-    "biology",
-    "botany",
-    "calculus",
-    "chemistry"
+    "bullshit",
+    "start"
   ];
 
   var index = Math.floor(Math.random() * Math.floor(array.length));

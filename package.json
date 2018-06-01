@@ -4,7 +4,6 @@
   "description": "Hello world alexa skill processor",
   "main": "index.js",
   "dependencies": {
-    "@slack/client": "^4.2.0",
     "ask-sdk": "^2.0.3",
     "lodash": "^4.17.10"
   },
