@@ -30,12 +30,15 @@ const StartGameHandler = {
   },
   handle(handlerInput) {
     //store in env variable
-    let answer = "broccoli";
-    process.env.ANSWER = word;
-    console.log("The guessed word is " + process.env.ANSWER);
+    let answer = game.getRandomWord();
+    console.log("The guessed word is " + answer);
 
     let speechResponse = "Okay, the word has " + answer.length + " letters";
-    
+
+    handlerInput.attributesManager.setSessionAttributes({
+      game_answer: answer
+    })
+
     return handlerInput.responseBuilder
       .speak(speechResponse).getResponse();
   }
@@ -55,10 +58,12 @@ const GuessALetterHandler = {
         return response;
       }
 
-      console.log("The guessed word is " + process.env.ANSWER);
+      let answer = handlerInput.attributesManager.getSessionAttributes().game_answer;
+
+      console.log("The guessed word is " + answer);
 
       let speechResponse = "";
-      let positions = game.tryLetter(letterGuessed, process.env.ANSWER);
+      let positions = game.tryLetter(letterGuessed, answer);
 
       if (positions.length === 0) {
         speechResponse = "Nope";
@@ -85,9 +90,12 @@ const GuessTheWordHandler = {
       return response;
     }
 
-    console.log("The guessed word is " + process.env.ANSWER);
 
-    let guessed = game.tryWord(wordGuessed, process.env.ANSWER);
+    let answer = handlerInput.attributesManager.getSessionAttributes().game_answer;
+
+    console.log("The guessed word is " + answer);
+
+    let guessed = game.tryWord(wordGuessed, answer);
 
     if (guessed) {
       speechResponse = "You got it";
